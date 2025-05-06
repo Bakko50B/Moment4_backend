@@ -11,7 +11,7 @@ Starta sedan applikationen med:
 ## Routes
   
 * POST: http://localhost:3000/api/register   			-> Skapa en användare
-* POST: http://localhost:3000/api/login 				-> Inlog för användare
+* POST: http://localhost:3000/api/login 				-> Inlogg för användare
 * GET:  http://localhost:3000/api/protected 			-> Skyddat område  
 
 Om någon annan route än ovan anropas ges ett felmeddelande som svar.
