@@ -1,6 +1,6 @@
-# Exempel-API med Express
-Ett skal för ett REST-API som använder NodeJs och Express.
-Cors används för att tillåta alla anrop från alla domäner (fungerar ok som expempel, men är inte att rekommendera i en riktig webbplats).
+# Skal för API med autentisering
+Ursprung från kurslitteratur.  
+Det mesta är förändrat, men skalet var en bra start trots det.  
 
 ## Installation
 Kör: 
@@ -9,13 +9,14 @@ Starta sedan applikationen med:
 **npm run serve**
 
 ## Routes
-Dessa "endpoints" används:
-* GET: 	http://localhost:3000/api/ 						-> Returnerar hälsningsfras
-* GET: 	http://localhost:3000/api/users 				-> Returnera array med användare
-* POST: 	http://localhost:3000/api/users 			-> Lägg till användare
-* PUT: 	http://localhost:3000/api/users/:id			-> Uppdatera en befintig användare
-* DELETE: http://localhost:3000/api/users/:id	-> Radera en användare
+  
+* POST: http://localhost:3000/api/register   			-> Skapa en användare
+* POST: http://localhost:3000/api/login 				-> Inlog för användare
+* GET:  http://localhost:3000/api/protected 			-> Skyddat område  
+
 Om någon annan route än ovan anropas ges ett felmeddelande som svar.
 
 ## Av
 Av Mattias Dahlgren, Mittuniversitetet, mattias.dahlgren@miun.se
+### Bearbetat av
+Torbjöen Lundberg, tolu2403@student.miun.se 
