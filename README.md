@@ -2,10 +2,10 @@
 Ursprung från kurslitteratur.  
 Det mesta är förändrat, men skalet var en bra start trots det.  
 
-## Installation
-Kör: 
-**npm install**
-Starta sedan applikationen med: 
+## Installation  
+Kör:   
+**npm install**  
+Starta sedan applikationen med:   
 **npm run serve**
 
 ## Routes
