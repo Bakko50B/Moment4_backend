@@ -3,7 +3,7 @@
  * Av Mattias Dahlgren, mattias.dahlgren@miun.se
  */
 const express = require('express');
-// const cors = require('cors');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes'); // Importera authRoutes
 require('dotenv').config(); // Ladda miljövariabler från .env-filen
@@ -14,7 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Aktivera CORS middleware för alla rutter
-// app.use(cors());
+app.use(cors());
 
 /** ------ Rutter (Routes) ------ */
 

@@ -20,67 +20,77 @@ const User = require("../models/User");
 
 // ny användare
 router.post('/register', async (req, res) => {
-    // console.log("Register request received:");
     try {
         const { username, password, email } = req.body;
 
         if (!username || !password) {
             return res.status(400).json({ error: "Du måste ange både användarnamn och lösenord" });
         }
-        //Correct
+
+        // Kontrollera om användaren redan finns
         let existingUser = await User.findOne({ username });
         if (existingUser) {
             console.log(existingUser.username);
-            return res.status(409).json({ message: `Användarnamnet ${existingUser.username  } är upptaget` })
+            return res.status(409).json({ message: `Användarnamnet ${existingUser.username} är upptaget` });
         }
 
-        const user = new User({ username, password, email });
-        await user.save();
-        res.status(201).json({ message: "Användaren skapades" })
+        // Använd den statiska metoden `register` från modellen
+        const user = await User.register(username, password, email);
+
+        res.status(201).json({ message: "Användaren skapades", user });
     } catch (error) {
-        res.status(500).json({ error: "Serverfel" })
+        console.error("Register fel:", error);
+        res.status(500).json({ error: "Serverfel" });
     }
 });
 
+
 router.post('/login', async (req, res) => {
-    // console.log("Login request received:");
     try {
         const { username, password } = req.body;
 
         if (!username || !password) {
             return res.status(400).json({ error: "Du måste ange både användarnamn och lösenord" });
         }
-        //User existing
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(401).json({ error: "Felaktigt användarnamn eller lösenord!" });
-        }
-        const isPasswordMatch = await user.comparePassword(password);
-        if (!isPasswordMatch) {
-            return res.status(401).json({ error: "Felaktigt användarnamn eller lösenord!" });
-        } else {
-            //skapa jwt
-            const payload = { username: username };
-            const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' }); // Token är valid i 1 timme
-            
-            const userData = await User.findOne({ username} , {password:0})
-            const response = {
-                message: "Användaren loggades in!",
-                token: token,
-                user: userData
-            }
-            console.log(response);
-            res.status(200).json({ response });
-        }
+
+        const user = await User.login(username, password); 
+
+        // Skapa JWT
+        const payload = { username: user.username };
+        const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
+
+        // Exkludera lösenord vid hämtning av användardata
+        const userData = await User.findOne({ username }).select("-password");
+
+        const response = {
+            message: "Användaren loggades in!",
+            token: token,
+            user: userData
+        };
+
+        console.log(response);
+        res.status(200).json( response );
+
     } catch (error) {
         console.error("Login fel:", error);
-        res.status(500).json({ error: "Serverfel!" })
+        res.status(401).json({ error: "Felaktigt användarnamn eller lösenord!" });
     }
 });
 
-router.get("/protected", authenticateToken, (req, res) => {
-    res.status(200).json({ message: "Inloggad till skyddat område..." });
+
+router.get("/protected", authenticateToken, async (req, res) => {
+    try {
+        const users = await User.find().select("-password"); // Hämtar alla användare från databasen
+
+        res.status(200).json({
+            message: "Inloggad till skyddat område...",
+            users: users // Skickar tillbaka alla användare
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Serverfel vid hämtning av data!" });
+    }
 });
+
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
