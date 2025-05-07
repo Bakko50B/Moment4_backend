@@ -13,16 +13,12 @@ const port = process.env.PORT || 3000; // Använd port från .env eller standard
 const app = express();
 app.use(bodyParser.json());
 
-
-
-
 // Aktivera CORS middleware för alla rutter
 // app.use(cors());
 
 /** ------ Rutter (Routes) ------ */
 
 app.use('/api', authRoutes); // Använd authRoutes för /api/auth
-
 
 // Om ingen av ovanstående rutter fångar upp anropet
 app.all('*', (req, res) => {
