@@ -53,11 +53,17 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: "Du måste ange både användarnamn och lösenord" });
         }
 
-        const user = await User.login(username, password); 
+        const user = await User.login(username, password);
 
-        // Skapa JWT
-        const payload = { username: user.username };
-        const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
+        // Skapa JWT - gammalt
+        // const payload = { username: user.username };
+        // const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
+
+        // Skapa JWT nytt (ger möjlighet att hantera på frontend)
+        const expiresAt = Math.floor(Date.now() / 1000) + (60 * 60); // 1 timme framåt
+        const payload = { username: user.username, exp: expiresAt };
+        const token = jwt.sign(payload, process.env.JWT_KEY);
+
 
         // Exkludera lösenord vid hämtning av användardata
         const userData = await User.findOne({ username }).select("-password");
@@ -69,7 +75,7 @@ router.post('/login', async (req, res) => {
         };
 
         console.log(response);
-        res.status(200).json( response );
+        res.status(200).json(response);
 
     } catch (error) {
         console.error("Login fel:", error);
