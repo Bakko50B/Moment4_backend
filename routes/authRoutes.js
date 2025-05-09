@@ -9,7 +9,7 @@ require("dotenv").config();
 
 mongoose.set("strictQuery", false);
 mongoose.connect(process.env.DATABASE, {
-    dbName: 'BE-2025' // Specify the database name
+    dbName: 'BE-2025' // Min databas 
 }).then(() => {
     console.log('Inloggad till MongoDB BE-2025');
 }).catch((err) => {
@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-
+// logga in
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -59,11 +59,10 @@ router.post('/login', async (req, res) => {
         // const payload = { username: user.username };
         // const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' });
 
-        // Skapa JWT nytt (ger möjlighet att hantera på frontend)
+        // Skapa en JWT-token med utgångstid i payload (exp) istället för expiresIn
         const expiresAt = Math.floor(Date.now() / 1000) + (60 * 60); // 1 timme framåt
         const payload = { username: user.username, exp: expiresAt };
         const token = jwt.sign(payload, process.env.JWT_KEY);
-
 
         // Exkludera lösenord vid hämtning av användardata
         const userData = await User.findOne({ username }).select("-password");
@@ -83,7 +82,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
+// skyddad route som ger alla användare 
+// Måste vara inloggad   
 router.get("/protected", authenticateToken, async (req, res) => {
     try {
         const users = await User.find().select("-password"); // Hämtar alla användare från databasen
@@ -97,7 +97,8 @@ router.get("/protected", authenticateToken, async (req, res) => {
     }
 });
 
-
+// Autentiseringsfunktion
+// Verifiera JWT-token för att ge användaren tillgång till skyddade routes
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
