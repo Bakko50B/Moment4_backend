@@ -2,7 +2,7 @@
 Utgångspunkt med ett skal från Mattias Dahlgren  
 Hämtat från teori och läsanvisningar    
 Det mesta är förändrat, men skalet var en bra start trots det.  
-Koden har sitt urrsprung från kurslitteratur (video) och bhar delvis reviderats.  
+Koden har sitt urrsprung från kurslitteratur (video) och har delvis reviderats.  
 
 ## Installation  
 Kör:   
