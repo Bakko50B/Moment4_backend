@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-// const { use } = require("../routes/authRoutes");
 
 // Schema for user
 const userSchema = new mongoose.Schema({
